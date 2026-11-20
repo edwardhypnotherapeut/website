@@ -1,0 +1,20 @@
+---
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  subheading: string;
+  id?: string;
+}
+
+const { eyebrow, heading, subheading, id = 'page-heading' } = Astro.props;
+---
+
+<section class="page-header" aria-labelledby={id}>
+  <div class="container">
+    <div class="page-header__inner">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h1 id={id}>{heading}</h1>
+      <p class="lede">{subheading}</p>
+    </div>
+  </div>
+</section>

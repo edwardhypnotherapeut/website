@@ -1,0 +1,77 @@
+---
+import site from '../data/site.json';
+import { ui, type Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  showHours?: boolean;
+}
+
+const { lang, showHours = true } = Astro.props;
+const t = ui[lang];
+const [emailUser, emailDomain] = site.email.split('@');
+const hours = site.openingHours[lang];
+const whatsappDigits = site.whatsapp.replace(/[^0-9]/g, '');
+---
+
+<address class="contact-details">
+  <div class="detail">
+    <span class="detail__label">{t.emailLabel}</span>
+    <span class="detail__value">
+      <a href={`mailto:${site.email}`}>{emailUser}@<wbr />{emailDomain}</a>
+    </span>
+  </div>
+
+  <div class="detail">
+    <span class="detail__label">{t.phoneLabel}</span>
+    <span class="detail__value">
+      <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+    </span>
+  </div>
+
+  <div class="detail">
+    <span class="detail__label">{t.whatsappLabel}</span>
+    <span class="detail__value">
+      <a
+        href={`https://wa.me/${whatsappDigits}`}
+        rel="noopener noreferrer"
+        target="_blank"
+      >{site.phone}</a>
+    </span>
+  </div>
+
+  <div class="detail">
+    <span class="detail__label">{t.addressLabel}</span>
+    <span class="detail__value">
+      {site.address.street}<br />
+      {site.address.postalCode} {site.address.city}<br />
+      {site.address.country}
+      <br />
+      <a href={site.address.mapsUrl} rel="noopener noreferrer" target="_blank">
+        {t.getDirections}
+        <Icon name="arrow-up-right" size={13} />
+      </a>
+    </span>
+  </div>
+
+  {
+    showHours && (
+      <div class="detail">
+        <span class="detail__label">{t.hoursLabel}</span>
+        <span class="detail__value">
+          <span class="detail-list">
+            {hours.map((row) => (
+              <span class="detail-list__row">
+                <span>{row.days}</span>
+                <span>{row.hours}</span>
+              </span>
+            ))}
+          </span>
+        </span>
+      </div>
+    )
+  }
+
+  <p class="contact-note">{t.onlineNote}</p>
+</address>

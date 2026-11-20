@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" width="900" height="1100">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7eedf"/>
+      <stop offset="1" stop-color="#efdfca"/>
+    </linearGradient>
+    <linearGradient id="archFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf6ea"/>
+      <stop offset="1" stop-color="#f3e2cc"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="900" height="1100" fill="url(#bg)"/>
+
+  <path d="M170 900 V430 A280 280 0 0 1 730 430 V900 Z" fill="url(#archFill)" stroke="#d8bb97" stroke-width="4"/>
+  <circle cx="520" cy="430" r="120" fill="#e9c9a5"/>
+  <path d="M170 760 C300 700 420 760 540 720 C660 680 720 710 730 700 V900 H170 Z" fill="#c3d5c3" opacity="0.8"/>
+
+  <path d="M110 1010 H790" stroke="#0f3a35" stroke-width="3" opacity="0.35"/>
+  <path d="M170 900 V1010" stroke="#0f3a35" stroke-width="2" opacity="0.18"/>
+  <path d="M730 900 V1010" stroke="#0f3a35" stroke-width="2" opacity="0.18"/>
+
+  <!-- Botanical line art -->
+  <g stroke="#0f3a35" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M330 1010 C320 900 340 820 420 760"/>
+    <path d="M420 890 C470 860 520 860 560 830"/>
+    <path d="M380 820 C420 790 470 786 510 760"/>
+  </g>
+  <g fill="#0f3a35">
+    <ellipse cx="430" cy="756" rx="42" ry="16" transform="rotate(-42 430 756)"/>
+    <ellipse cx="570" cy="826" rx="38" ry="14" transform="rotate(-28 570 826)"/>
+    <ellipse cx="516" cy="756" rx="36" ry="14" transform="rotate(-34 516 756)"/>
+    <ellipse cx="350" cy="870" rx="32" ry="13" transform="rotate(-62 350 870)"/>
+  </g>
+
+  <circle cx="250" cy="200" r="60" fill="none" stroke="#b98a5d" stroke-width="2" opacity="0.5"/>
+  <circle cx="760" cy="940" r="90" fill="none" stroke="#b98a5d" stroke-width="2" opacity="0.35"/>
+
+  <rect width="900" height="1100" filter="url(#grain)" opacity="0.05"/>
+</svg>

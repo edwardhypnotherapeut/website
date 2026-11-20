@@ -1,0 +1,115 @@
+---
+import site from '../data/site.json';
+import { ui, type Lang } from '../lib/i18n';
+import { href } from '../lib/content';
+import type { NavModel } from '../lib/nav-model';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  nav: NavModel;
+  alternatePath: string | null;
+}
+
+const { lang, nav, alternatePath } = Astro.props;
+const t = ui[lang];
+const other: Lang = lang === 'en' ? 'nl' : 'en';
+const alternate = alternatePath ?? (lang === 'en' ? '/nl/' : '/');
+const bookPath = nav.book?.path ?? (lang === 'en' ? '/book/' : '/nl/afspraak/');
+const contactPath = nav.contact?.path ?? (lang === 'en' ? '/contact/' : '/nl/contact/');
+
+const groupFooterLabel = (key: string, label: string) => {
+  if (key === 'therapies') return t.allTherapies;
+  if (key === 'issues') return t.allIssues;
+  return label;
+};
+---
+
+<header class="site-header">
+  <div class="container header-bar">
+    <a class="brand" href={href('/')} aria-label={`${site.practiceName} — home`}>
+      <span class="brand__mark" aria-hidden="true"><Icon name="arch" size={26} /></span>
+      <span class="brand__text">
+        <span class="brand__name">{site.therapist}</span>
+        <span class="brand__sub">Hypnotherapy</span>
+      </span>
+    </a>
+
+    <nav class="nav-desktop" aria-label={lang === 'en' ? 'Main navigation' : 'Hoofdnavigatie'}>
+      {
+        nav.primary.map((item) =>
+          item.children ? (
+            <details class="nav-item" data-active={String(item.active)}>
+              <summary>
+                {item.label}
+                <Icon name="chevron-down" size={13} class="chev" />
+              </summary>
+              <div class:list={['nav-panel', { 'nav-panel--wide': item.children.length > 6 }]}>
+                {item.children.map((child) => (
+                  <a href={href(child.path)} aria-current={child.active ? 'page' : undefined}>
+                    {child.label}
+                  </a>
+                ))}
+                <div class="nav-panel__footer">
+                  <a href={href(item.path)}>{groupFooterLabel(item.key, item.label)}</a>
+                </div>
+              </div>
+            </details>
+          ) : (
+            <a class="nav-link" href={href(item.path)} aria-current={item.active ? 'page' : undefined}>
+              {item.label}
+            </a>
+          )
+        )
+      }
+    </nav>
+
+    <div class="header-actions">
+      <a class="lang-switch" href={href(alternate)} aria-label={t.switchLanguage} hreflang={other}>
+        <Icon name="globe" size={15} />
+        {ui[other].code}
+      </a>
+      <a class="btn btn--primary btn--small header-cta" href={href(bookPath)}>{t.bookShort}</a>
+      <details class="mobile-nav">
+        <summary aria-label={t.menu}>
+          <span class="mobile-nav__icon" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+        </summary>
+        <div class="mobile-panel">
+          {nav.primary.map((item) =>
+            item.children ? (
+              <div class="mobile-panel__group">
+                <span class="mobile-panel__label">{item.label}</span>
+                <a href={href(item.path)}>{groupFooterLabel(item.key, item.label)}</a>
+                {item.children.map((child) => (
+                  <a href={href(child.path)} aria-current={child.active ? 'page' : undefined}>
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div class="mobile-panel__group">
+                <a href={href(item.path)} aria-current={item.active ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </div>
+            )
+          )}
+          <div class="mobile-panel__cta">
+            <a class="btn btn--primary" href={href(bookPath)}>{t.bookCta}</a>
+            <a class="btn btn--secondary" href={href(contactPath)}>
+              {lang === 'en' ? 'Send a message' : 'Stuur een bericht'}
+            </a>
+          </div>
+          <div class="mobile-panel__footer">
+            <a class="lang-switch" href={href(alternate)} hreflang={other} aria-label={t.switchLanguage}>
+              <Icon name="globe" size={15} />
+              {t.switchLanguageLabel}
+            </a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>

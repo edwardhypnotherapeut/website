@@ -1,0 +1,134 @@
+/* Supplementary layout styles used by page layouts */
+
+dd {
+  margin-inline-start: 0;
+}
+
+.section__head.section--center {
+  justify-content: center;
+  text-align: center;
+}
+
+.section__head.section--center .section__head-text {
+  align-items: center;
+}
+
+/* Price list */
+.price-list {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.price-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.price-row__title {
+  font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+}
+
+.price-row__title a {
+  color: var(--ink);
+}
+
+.price-row__title a:hover {
+  color: var(--brand-deep);
+}
+
+.price-row__body p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.price-row__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.price-row__meta strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--brand-deep);
+}
+
+.price-note {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+@media (min-width: 760px) {
+  .price-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .price-row__meta {
+    min-width: 12rem;
+    justify-content: flex-end;
+    gap: 1.75rem;
+  }
+}
+
+/* Ink section prose */
+.prose--on-ink {
+  color: var(--on-ink-muted);
+  max-width: 34rem;
+}
+
+.prose--on-ink h2 {
+  color: var(--on-ink);
+  margin-top: 0.5rem;
+}
+
+.prose--on-ink a {
+  color: var(--sand);
+}
+
+.prose--on-ink .link-arrow {
+  color: var(--sand);
+  border-color: rgba(218, 180, 142, 0.5);
+}
+
+.ink-portrait {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Miscellaneous page bits */
+.contact-block-heading {
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  margin-bottom: 1.25rem;
+}
+
+.prose--legal {
+  max-width: 72ch;
+}
+
+.prose--legal h2 {
+  scroll-margin-top: 6rem;
+}
+
+@media (min-width: 600px) {
+  .section__head {
+    align-items: flex-end;
+  }
+}

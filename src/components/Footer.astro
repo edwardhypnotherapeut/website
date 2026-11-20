@@ -1,0 +1,101 @@
+---
+import site from '../data/site.json';
+import { ui, type Lang } from '../lib/i18n';
+import { href } from '../lib/content';
+import type { NavModel } from '../lib/nav-model';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  nav: NavModel;
+}
+
+const { lang, nav } = Astro.props;
+const t = ui[lang];
+const [emailUser, emailDomain] = site.email.split('@');
+const year = new Date().getFullYear();
+const hours = site.openingHours[lang];
+const kvk = site.legal.kvk.includes('REPLACE_ME') ? null : site.legal.kvk;
+const agb = site.legal.agb.includes('REPLACE_ME') ? null : site.legal.agb;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href={href('/')} aria-label={`${site.practiceName} — home`}>
+          <span class="brand__mark" aria-hidden="true"><Icon name="arch" size={26} /></span>
+          <span class="brand__text">
+            <span class="brand__name">{site.therapist}</span>
+            <span class="brand__sub">Hypnotherapy</span>
+          </span>
+        </a>
+        <p>{site.blurb[lang]}</p>
+        <div class="socials">
+          {
+            site.social.map((social) => (
+              <a href={social.url} rel="noopener noreferrer" target="_blank" aria-label={social.label}>
+                <Icon name={social.icon} size={17} />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h2>{t.footerExplore}</h2>
+        <ul>
+          {nav.footer.map((item) => (
+            <li><a href={href(item.path)}>{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>{t.footerContact}</h2>
+        <div class="footer-contact">
+          <a href={`mailto:${site.email}`}>{emailUser}@<wbr />{emailDomain}</a>
+          <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+          <a href={`https://wa.me/${site.whatsapp.replace(/[^0-9]/g, '')}`} rel="noopener noreferrer" target="_blank">
+            {t.whatsappLabel}
+          </a>
+          <span>{site.address.street}, {site.address.postalCode} {site.address.city}</span>
+        </div>
+        <h2 style="margin-top: 1.6rem;">{t.hoursLabel}</h2>
+        <ul>
+          {hours.map((row) => (
+            <li><span>{row.days}</span> — <span>{row.hours}</span></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>{t.footerLegal}</h2>
+        <ul>
+          {nav.legal.map((item) => (
+            <li><a href={href(item.path)}>{item.label}</a></li>
+          ))}
+          {nav.book && (
+            <li><a href={href(nav.book.path)}>{t.bookCta}</a></li>
+          )}
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer-disclaimer">{t.footerDisclaimer}</p>
+
+    <div class="footer-bottom">
+      <p>© {year} {site.practiceName}. {t.footerRights}</p>
+      <div class="footer-bottom__links">
+        {(kvk || agb) && (
+          <span>
+            {kvk && <>{t.footerKvk}: {kvk}</>}
+            {kvk && agb && ' · '}
+            {agb && <>AGB: {agb}</>}
+          </span>
+        )}
+        <a href={href(nav.legal[0]?.path ?? '/privacy/')}>{nav.legal[0]?.label ?? 'Privacy'}</a>
+      </div>
+    </div>
+  </div>
+</footer>

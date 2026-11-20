@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { buildNav } from '../lib/nav-model';
+import { ui } from '../lib/i18n';
+import { href } from '../lib/content';
+import Icon from '../components/Icon.astro';
+
+const lang = 'en' as const;
+const t = ui.en;
+const nav = await buildNav('en', '/404/');
+---
+
+<BaseLayout
+  lang={lang}
+  title={`Page not found — ${t.notFoundHeading}`}
+  description={t.notFoundBody}
+  slug="/404.html"
+  alternates={[]}
+  noindex
+  nav={nav}
+>
+  <section class="not-found">
+    <div class="container not-found__inner">
+      <span class="not-found__code" aria-hidden="true">404</span>
+      <span class="eyebrow">{lang === 'en' ? 'Page not found' : 'Pagina niet gevonden'}</span>
+      <h1>{t.notFoundHeading}</h1>
+      <p class="lede">{t.notFoundBody}</p>
+      <p class="muted" lang="nl">{ui.nl.notFoundHeading}. {ui.nl.notFoundBody}</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href={href('/')}>
+          {t.notFoundHome}
+          <Icon name="arrow-right" size={16} class="btn__icon" />
+        </a>
+        <a class="btn btn--secondary" href={href('/nl/')}>Naar de Nederlandse site</a>
+      </div>
+      <a class="link-arrow" href={href('/contact/')}>{t.notFoundContact}</a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+import '../styles/components.css';
+import site from '../data/site.json';
+import type { Lang } from '../lib/i18n';
+import { href } from '../lib/content';
+import type { NavModel } from '../lib/nav-model';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  slug: string;
+  alternates: { lang: Lang; path: string }[];
+  image?: string;
+  noindex?: boolean;
+  nav: NavModel;
+  jsonLd?: Record<string, unknown>[];
+}
+
+const {
+  lang,
+  title,
+  description,
+  slug,
+  alternates,
+  image = '/images/og.png',
+  noindex = false,
+  nav,
+  jsonLd = [],
+} = Astro.props;
+
+const siteOrigin = Astro.site ?? new URL('https://edwardhazebroek.nl');
+const canonical = new URL(href(slug), siteOrigin).toString();
+const ogImage = new URL(href(image), siteOrigin).toString();
+
+const enAlternate = alternates.find((item) => item.lang === 'en');
+const nlAlternate = alternates.find((item) => item.lang === 'nl');
+const xDefault = enAlternate ? new URL(href(enAlternate.path), siteOrigin).toString() : canonical;
+
+const locale = lang === 'en' ? 'en_GB' : 'nl_NL';
+const altLocale = lang === 'en' ? 'nl_NL' : 'en_GB';
+
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'HealthAndBeautyBusiness',
+  '@id': new URL(href('/'), siteOrigin).toString(),
+  name: site.practiceName,
+  description: site.blurb[lang],
+  url: new URL(href('/'), siteOrigin).toString(),
+  image: ogImage,
+  email: site.email,
+  telephone: site.phoneHref,
+  priceRange: '€€',
+  currenciesAccepted: 'EUR',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    postalCode: site.address.postalCode,
+    addressLocality: site.address.city,
+    addressRegion: site.address.region,
+    addressCountry: site.address.countryCode,
+  },
+  areaServed: site.areaServed.map((area) => ({ '@type': 'AdministrativeArea', name: area })),
+  openingHoursSpecification: site.openingHoursSpecification.map((entry) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: entry.days,
+    opens: entry.opens,
+    closes: entry.closes,
+  })),
+  sameAs: site.social.map((social) => social.url),
+  founder: { '@type': 'Person', name: site.therapist },
+};
+
+const structuredData = [business, ...jsonLd];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={enAlternate ? new URL(href(enAlternate.path), siteOrigin).toString() : canonical} />
+    <link rel="alternate" hreflang="nl" href={nlAlternate ? new URL(href(nlAlternate.path), siteOrigin).toString() : canonical} />
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.practiceName} />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:locale:alternate" content={altLocale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={lang === 'en' ? 'A calm therapy room with warm light' : 'Een rustige praktijkruimte met warm licht'} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#faf7f2" />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={href('/favicon.svg')} />
+    <link rel="sitemap" href={href('/sitemap-index.xml')} />
+    <meta name="author" content={site.therapist} />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..600&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap"
+      rel="stylesheet"
+    />
+
+    {structuredData.map((data) => (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(data)} />
+    ))}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{lang === 'en' ? 'Skip to content' : 'Naar de inhoud'}</a>
+    <Header lang={lang} nav={nav} alternatePath={alternates.find((item) => item.lang !== lang)?.path ?? null} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} nav={nav} />
+  </body>
+</html>

@@ -1,0 +1,56 @@
+---
+import { href, type ServiceEntry } from '../lib/content';
+import type { Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  service: ServiceEntry;
+  lang: Lang;
+  linkPath?: string;
+  linkLabel?: string;
+}
+
+const { service, lang, linkPath, linkLabel } = Astro.props;
+const { title, summary, duration, price, image, imageAlt } = service.data;
+const durationLabel = lang === 'en' ? 'Duration' : 'Duur';
+const priceLabel = lang === 'en' ? 'Investment' : 'Investering';
+---
+
+<article class="service-card">
+  {
+    image && (
+      <div class="service-card__media">
+        <img
+          src={href(image)}
+          alt={imageAlt ?? ''}
+          width="800"
+          height="550"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )
+  }
+  <div class="service-card__body">
+    <h3>{title}</h3>
+    <p>{summary}</p>
+    <dl class="service-card__meta">
+      <div>
+        <dt class="sr-only">{durationLabel}</dt>
+        <dd>{duration}</dd>
+      </div>
+      <div>
+        <dt class="sr-only">{priceLabel}</dt>
+        <dd><strong>{price}</strong></dd>
+      </div>
+    </dl>
+    {
+      linkPath && (
+        <a class="service-card__link" href={href(linkPath)}>
+          {linkLabel ?? (lang === 'en' ? 'Read more' : 'Lees meer')}
+          <Icon name="arrow-right" size={14} />
+        </a>
+      )
+    }
+  </div>
+</article>

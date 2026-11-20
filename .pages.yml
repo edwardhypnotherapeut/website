@@ -1,0 +1,599 @@
+# Pages CMS configuration — https://pagescms.org
+# Lets a non-technical editor manage pages, services, FAQs, testimonials,
+# site settings and images without touching code.
+
+media:
+  input: public/images
+  output: /images
+
+content:
+  # ---------------------------------------------------------------- Pages
+  - name: pages_en
+    label: Pages — English
+    type: collection
+    path: src/content/pages/en
+    filename:
+      template: "{slug}.md"
+    view:
+      fields: [title, urlSlug, translationKey]
+      primary: title
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+        description: Used in navigation and the browser tab.
+      - name: navTitle
+        label: Navigation title
+        type: string
+        description: Optional shorter label for the menu.
+      - name: description
+        label: Meta description
+        type: text
+        required: true
+        description: 120–160 characters for search engines and social cards.
+      - name: urlSlug
+        label: URL
+        type: string
+        required: true
+        description: Must start and end with a slash, e.g. /therapies/hypnotherapy/
+      - name: translationKey
+        label: Translation key
+        type: string
+        required: true
+        description: Must be identical on the Dutch page.
+      - name: lang
+        label: Language
+        type: select
+        required: true
+        options:
+          values: [en]
+      - name: eyebrow
+        label: Eyebrow
+        type: string
+      - name: hero
+        label: Hero
+        type: object
+        fields:
+          - name: heading
+            label: Heading
+            type: string
+            required: true
+          - name: subheading
+            label: Subheading
+            type: text
+            required: true
+          - name: image
+            label: Hero image
+            type: image
+            description: Leave empty for a text-only page header.
+          - name: imageAlt
+            label: Hero image alt text
+            type: string
+      - name: seoTitle
+        label: SEO title
+        type: string
+      - name: noindex
+        label: Hide from search engines
+        type: boolean
+        default: false
+      - name: layout
+        label: Page layout
+        type: select
+        required: true
+        options:
+          values:
+            [
+              home,
+              standard,
+              services,
+              issues,
+              prices,
+              process,
+              about,
+              testimonials,
+              faq,
+              contact,
+              book,
+              legal,
+            ]
+      - name: faq
+        label: Show FAQ section
+        type: boolean
+        default: false
+      - name: testimonials
+        label: Show testimonials section
+        type: boolean
+        default: false
+      - name: cta
+        label: Call to action
+        type: object
+        fields:
+          - name: heading
+            label: Heading
+            type: string
+          - name: body
+            label: Body
+            type: text
+          - name: primaryLabel
+            label: Primary button label
+            type: string
+          - name: secondaryLabel
+            label: Secondary button label
+            type: string
+      - name: order
+        label: Sort order
+        type: number
+        default: 0
+      - name: body
+        label: Content
+        type: rich-text
+
+  - name: pages_nl
+    label: Pagina's — Nederlands
+    type: collection
+    path: src/content/pages/nl
+    filename:
+      template: "{slug}.md"
+    view:
+      fields: [title, urlSlug, translationKey]
+      primary: title
+    fields:
+      - name: title
+        label: Titel
+        type: string
+        required: true
+      - name: navTitle
+        label: Menutitel
+        type: string
+      - name: description
+        label: Metabeschrijving
+        type: text
+        required: true
+      - name: urlSlug
+        label: URL
+        type: string
+        required: true
+      - name: translationKey
+        label: Vertaalsleutel
+        type: string
+        required: true
+        description: Moet gelijk zijn aan de Engelse pagina.
+      - name: lang
+        label: Taal
+        type: select
+        required: true
+        options:
+          values: [nl]
+      - name: eyebrow
+        label: Eyebrow
+        type: string
+      - name: hero
+        label: Hero
+        type: object
+        fields:
+          - name: heading
+            label: Kop
+            type: string
+            required: true
+          - name: subheading
+            label: Subkop
+            type: text
+            required: true
+          - name: image
+            label: Hero-afbeelding
+            type: image
+          - name: imageAlt
+            label: Alt-tekst
+            type: string
+      - name: seoTitle
+        label: SEO-titel
+        type: string
+      - name: noindex
+        label: Verbergen voor zoekmachines
+        type: boolean
+        default: false
+      - name: layout
+        label: Paginalayout
+        type: select
+        required: true
+        options:
+          values:
+            [
+              home,
+              standard,
+              services,
+              issues,
+              prices,
+              process,
+              about,
+              testimonials,
+              faq,
+              contact,
+              book,
+              legal,
+            ]
+      - name: faq
+        label: FAQ-sectie tonen
+        type: boolean
+        default: false
+      - name: testimonials
+        label: Ervaringen tonen
+        type: boolean
+        default: false
+      - name: cta
+        label: Call to action
+        type: object
+        fields:
+          - name: heading
+            label: Kop
+            type: string
+          - name: body
+            label: Tekst
+            type: text
+          - name: primaryLabel
+            label: Knop primair
+            type: string
+          - name: secondaryLabel
+            label: Knop secundair
+            type: string
+      - name: order
+        label: Sorteervolgorde
+        type: number
+        default: 0
+      - name: body
+        label: Inhoud
+        type: rich-text
+
+  # ------------------------------------------------------------- Services
+  - name: services_en
+    label: Services — English
+    type: collection
+    path: src/content/services/en
+    view:
+      fields: [title, price, order]
+      primary: title
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: translationKey
+        label: Translation key
+        type: string
+        required: true
+      - name: lang
+        label: Language
+        type: select
+        required: true
+        options:
+          values: [en]
+      - name: summary
+        label: Summary
+        type: text
+        required: true
+      - name: duration
+        label: Duration
+        type: string
+        required: true
+      - name: price
+        label: Price
+        type: string
+        required: true
+      - name: order
+        label: Sort order
+        type: number
+        default: 0
+      - name: image
+        label: Image
+        type: image
+      - name: imageAlt
+        label: Image alt text
+        type: string
+
+  - name: services_nl
+    label: Diensten — Nederlands
+    type: collection
+    path: src/content/services/nl
+    view:
+      fields: [title, price, order]
+      primary: title
+    fields:
+      - name: title
+        label: Titel
+        type: string
+        required: true
+      - name: translationKey
+        label: Vertaalsleutel
+        type: string
+        required: true
+      - name: lang
+        label: Taal
+        type: select
+        required: true
+        options:
+          values: [nl]
+      - name: summary
+        label: Samenvatting
+        type: text
+        required: true
+      - name: duration
+        label: Duur
+        type: string
+        required: true
+      - name: price
+        label: Prijs
+        type: string
+        required: true
+      - name: order
+        label: Sorteervolgorde
+        type: number
+        default: 0
+      - name: image
+        label: Afbeelding
+        type: image
+      - name: imageAlt
+        label: Alt-tekst
+        type: string
+
+  # ----------------------------------------------------------------- FAQs
+  - name: faqs_en
+    label: FAQs — English
+    type: collection
+    path: src/content/faqs/en
+    view:
+      fields: [question, order]
+      primary: question
+    fields:
+      - name: question
+        label: Question
+        type: string
+        required: true
+      - name: answer
+        label: Answer
+        type: rich-text
+        required: true
+      - name: lang
+        label: Language
+        type: select
+        required: true
+        options:
+          values: [en]
+      - name: order
+        label: Sort order
+        type: number
+        default: 0
+
+  - name: faqs_nl
+    label: Veelgestelde vragen — Nederlands
+    type: collection
+    path: src/content/faqs/nl
+    view:
+      fields: [question, order]
+      primary: question
+    fields:
+      - name: question
+        label: Vraag
+        type: string
+        required: true
+      - name: answer
+        label: Antwoord
+        type: rich-text
+        required: true
+      - name: lang
+        label: Taal
+        type: select
+        required: true
+        options:
+          values: [nl]
+      - name: order
+        label: Sorteervolgorde
+        type: number
+        default: 0
+
+  # --------------------------------------------------------- Testimonials
+  - name: testimonials_en
+    label: Testimonials — English
+    type: collection
+    path: src/content/testimonials/en
+    view:
+      fields: [author, service, order]
+      primary: author
+    fields:
+      - name: quote
+        label: Quote
+        type: rich-text
+        required: true
+      - name: author
+        label: Author
+        type: string
+        required: true
+        description: First name only, for anonymity.
+      - name: location
+        label: Location
+        type: string
+      - name: service
+        label: Service
+        type: string
+      - name: rating
+        label: Rating (1–5)
+        type: number
+        default: 5
+      - name: order
+        label: Sort order
+        type: number
+        default: 0
+      - name: lang
+        label: Language
+        type: select
+        required: true
+        options:
+          values: [en]
+
+  - name: testimonials_nl
+    label: Ervaringen — Nederlands
+    type: collection
+    path: src/content/testimonials/nl
+    view:
+      fields: [author, service, order]
+      primary: author
+    fields:
+      - name: quote
+        label: Citaat
+        type: rich-text
+        required: true
+      - name: author
+        label: Auteur
+        type: string
+        required: true
+      - name: location
+        label: Locatie
+        type: string
+      - name: service
+        label: Dienst
+        type: string
+      - name: rating
+        label: Beoordeling (1–5)
+        type: number
+        default: 5
+      - name: order
+        label: Sorteervolgorde
+        type: number
+        default: 0
+      - name: lang
+        label: Taal
+        type: select
+        required: true
+        options:
+          values: [nl]
+
+  # -------------------------------------------------------- Site settings
+  - name: site
+    label: Site settings
+    type: file
+    path: src/data/site.json
+    fields:
+      - name: practiceName
+        label: Practice name
+        type: string
+        required: true
+      - name: therapist
+        label: Therapist name
+        type: string
+        required: true
+      - name: email
+        label: Email
+        type: string
+        required: true
+      - name: phone
+        label: Phone (display)
+        type: string
+        required: true
+      - name: phoneHref
+        label: Phone (dial format)
+        type: string
+        required: true
+      - name: whatsapp
+        label: WhatsApp number
+        type: string
+      - name: address
+        label: Address
+        type: object
+        fields:
+          - name: street
+            label: Street
+            type: string
+          - name: postalCode
+            label: Postal code
+            type: string
+          - name: city
+            label: City
+            type: string
+          - name: region
+            label: Province
+            type: string
+          - name: country
+            label: Country
+            type: string
+          - name: countryCode
+            label: Country code
+            type: string
+          - name: mapsUrl
+            label: Google Maps link
+            type: string
+      - name: areaServed
+        label: Areas served
+        type: string
+        list: true
+      - name: openingHours
+        label: Opening hours
+        type: object
+        fields:
+          - name: en
+            label: English
+            type: object
+            list: true
+            fields:
+              - name: days
+                label: Days
+                type: string
+              - name: hours
+                label: Hours
+                type: string
+          - name: nl
+            label: Nederlands
+            type: object
+            list: true
+            fields:
+              - name: days
+                label: Dagen
+                type: string
+              - name: hours
+                label: Tijden
+                type: string
+      - name: bookingUrl
+        label: Booking calendar URL
+        type: string
+      - name: formEndpoint
+        label: Contact form endpoint
+        type: string
+        description: Formspree endpoint, e.g. https://formspree.io/f/xxxxxxx
+      - name: blurb
+        label: Short description
+        type: object
+        fields:
+          - name: en
+            label: English
+            type: text
+          - name: nl
+            label: Nederlands
+            type: text
+      - name: social
+        label: Social links
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+          - name: url
+            label: URL
+            type: string
+          - name: icon
+            label: Icon
+            type: select
+            options:
+              values: [instagram, linkedin, facebook]
+      - name: legal
+        label: Legal details
+        type: object
+        fields:
+          - name: kvk
+            label: KvK number
+            type: string
+          - name: agb
+            label: AGB code
+            type: string
+          - name: complaintsBody
+            label: Complaints body
+            type: string

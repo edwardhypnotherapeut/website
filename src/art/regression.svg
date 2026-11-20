@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2e6d5"/>
+      <stop offset="1" stop-color="#e5d2b9"/>
+    </linearGradient>
+    <linearGradient id="tunnel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f3a35"/>
+      <stop offset="1" stop-color="#1d554c"/>
+    </linearGradient>
+    <radialGradient id="light" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fdf4e3"/>
+      <stop offset="1" stop-color="#fdf4e3" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="1000" height="700" fill="url(#bg)"/>
+  <circle cx="500" cy="365" r="250" fill="url(#light)" opacity="0.7"/>
+
+  <path d="M120 660 V300 A380 380 0 0 1 880 300 V660 Z" fill="#d9bb96" opacity="0.9"/>
+  <path d="M180 660 V320 A320 320 0 0 1 820 320 V660 Z" fill="#c9a67c"/>
+  <path d="M240 660 V340 A260 260 0 0 1 760 340 V660 Z" fill="url(#tunnel)"/>
+  <path d="M300 660 V360 A200 200 0 0 1 700 360 V660 Z" fill="#efe0c8"/>
+  <path d="M360 660 V380 A140 140 0 0 1 640 380 V660 Z" fill="#0f3a35"/>
+  <path d="M420 660 V400 A80 80 0 0 1 580 400 V660 Z" fill="#f8efdd"/>
+  <path d="M470 660 V430 A30 30 0 0 1 530 430 V660 Z" fill="#dab48e"/>
+
+  <g stroke="#b98a5d" stroke-width="2" opacity="0.45" fill="none">
+    <path d="M60 690 H940"/>
+    <path d="M100 640 C260 610 380 660 500 640 C640 618 780 650 900 620"/>
+  </g>
+  <rect width="1000" height="700" filter="url(#grain)" opacity="0.05"/>
+</svg>

@@ -1,0 +1,561 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import IssueCard from '../components/IssueCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import FaqList from '../components/FaqList.astro';
+import ContactForm from '../components/ContactForm.astro';
+import ContactDetails from '../components/ContactDetails.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import { credentials } from '../data/credentials';
+import {
+  getAlternate,
+  getFaqs,
+  getPageMap,
+  getServices,
+  getTestimonials,
+  href,
+  type PageEntry,
+} from '../lib/content';
+import { buildNav } from '../lib/nav-model';
+import { primaryNav } from '../lib/nav';
+import { ui, type Lang } from '../lib/i18n';
+import { processSteps } from '../lib/steps';
+
+interface Props {
+  page: PageEntry;
+  lang: Lang;
+}
+
+const { page, lang } = Astro.props;
+const { data } = page;
+const t = ui[lang];
+const { Content } = await render(page);
+
+const services = await getServices(lang);
+const faqs = await getFaqs(lang);
+const testimonials = await getTestimonials(lang);
+const pageMap = await getPageMap(lang);
+const nav = await buildNav(lang, data.urlSlug);
+const alternate = await getAlternate(page);
+
+const pathFor = (key: string, fallback: string) => pageMap.get(key)?.data.urlSlug ?? fallback;
+
+const therapiesPath = pathFor('therapies', '/therapies/');
+const issuesPath = pathFor('issues', '/issues/');
+const processPath = pathFor('process', '/process/');
+const faqPath = pathFor('faq', '/faq/');
+const testimonialsPath = pathFor('testimonials', '/about/testimonials/');
+const aboutPath = pathFor('about', '/about/');
+
+const issueKeys = primaryNav.find((item) => item.translationKey === 'issues')?.children ?? [];
+const issuePages = issueKeys
+  .map((key) => pageMap.get(key))
+  .filter((entry): entry is PageEntry => Boolean(entry));
+
+const alternates = [
+  { lang, path: data.urlSlug },
+  ...(alternate ? [{ lang: alternate.data.lang, path: alternate.data.urlSlug }] : []),
+];
+
+const title = data.seoTitle ?? `${data.title} — ${site.practiceName}`;
+const heroImage = data.hero.image;
+const layout = data.layout;
+const cta = data.cta;
+
+const labels = {
+  therapiesEyebrow: lang === 'en' ? 'Therapies' : 'Therapieën',
+  issuesEyebrow: lang === 'en' ? 'Issues & conditions' : 'Klachten en thema’s',
+  processEyebrow: lang === 'en' ? 'Process' : 'Werkwijze',
+  pricesEyebrow: lang === 'en' ? 'Prices' : 'Tarieven',
+  testimonialsEyebrow: lang === 'en' ? 'Testimonials' : 'Ervaringen',
+  faqEyebrow: lang === 'en' ? 'FAQ' : 'Vragen',
+  aboutEyebrow: lang === 'en' ? 'About' : 'Over',
+  contactEyebrow: lang === 'en' ? 'Contact' : 'Contact',
+  bookEyebrow: lang === 'en' ? 'Book now' : 'Plan een sessie',
+  openBooking: lang === 'en' ? 'Open the booking calendar' : 'Open de agenda',
+  bookingCalendarNote:
+    lang === 'en'
+      ? 'You will be taken to an external booking calendar. Prefer to talk first? Request the free intake call instead.'
+      : 'Je gaat naar een externe agenda. Liever eerst even praten? Vraag dan het gratis intakegesprek aan.',
+  allTherapies: t.allTherapies,
+  allIssues: t.allIssues,
+  priceNote:
+    lang === 'en'
+      ? 'All prices include preparation, the session itself and a short written follow-up. Payment by bank transfer or card after the session.'
+      : 'Alle tarieven zijn inclusief voorbereiding, de sessie zelf en een korte schriftelijke nabespreking. Betaling per bank of kaart na de sessie.',
+};
+
+const faqItems = faqs.map((item) => ({ question: item.data.question, answer: item.data.answer }));
+
+const faqJsonLd =
+  data.faq && faqs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((item) => ({
+          '@type': 'Question',
+          name: item.data.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.data.answer,
+          },
+        })),
+      }
+    : null;
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={data.description}
+  slug={data.urlSlug}
+  alternates={alternates}
+  image={heroImage ?? '/images/og.png'}
+  noindex={data.noindex}
+  nav={nav}
+  jsonLd={faqJsonLd ? [faqJsonLd] : []}
+>
+  {layout === 'home' && (
+    <>
+      <Hero
+        lang={lang}
+        eyebrow={data.eyebrow}
+        heading={data.hero.heading}
+        subheading={data.hero.subheading}
+        image={heroImage}
+        imageAlt={data.hero.imageAlt}
+        badges={t.homeBadges}
+        secondary={{ label: t.homeSecondary, path: processPath }}
+        priority
+      />
+
+      <section class="section section--tight">
+        <div class="container">
+          <div class="split">
+            <div class="prose">
+              <Content />
+            </div>
+            <aside class="split__aside">
+              <div class="aside-card">
+                <h2>{t.glanceTitle}</h2>
+                <ul class="glance-list">
+                  <li><Icon name="map-pin" size={16} />{t.glanceAvailability}</li>
+                  <li><Icon name="globe" size={16} />{t.glanceLanguages}</li>
+                  <li><Icon name="clock" size={16} />{t.glanceResponse}</li>
+                  <li><Icon name="shield" size={16} />{t.glanceDiscretion}</li>
+                </ul>
+                <div class="stats">
+                  {t.stats.map((stat) => (
+                    <div>
+                      <div class="stat__value">{stat.value}</div>
+                      <div class="stat__label">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="aside-card">
+                <h2>{t.hoursLabel}</h2>
+                <span class="detail-list">
+                  {site.openingHours[lang].map((row) => (
+                    <span class="detail-list__row">
+                      <span>{row.days}</span>
+                      <span>{row.hours}</span>
+                    </span>
+                  ))}
+                </span>
+                <p class="muted" style="font-size:0.85rem;margin-top:0.9rem">
+                  {site.address.street}, {site.address.postalCode} {site.address.city}
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <SectionHead
+            eyebrow={labels.therapiesEyebrow}
+            heading={t.servicesHeading}
+            intro={t.servicesIntro}
+            link={{ label: labels.allTherapies, path: therapiesPath }}
+          />
+          <div class="card-grid card-grid--4">
+            {services.map((service) => (
+              <ServiceCard
+                service={service}
+                lang={lang}
+                linkPath={pageMap.get(service.data.translationKey)?.data.urlSlug}
+                linkLabel={t.readMore}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--surface">
+        <div class="container">
+          <SectionHead
+            eyebrow={labels.processEyebrow}
+            heading={t.processHeading}
+            intro={t.processIntro}
+            link={{ label: t.readMore, path: processPath }}
+          />
+          <div class="steps">
+            {processSteps[lang].map((step) => (
+              <div class="step">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <SectionHead
+            eyebrow={labels.issuesEyebrow}
+            heading={t.issuesHeading}
+            intro={t.issuesIntro}
+            link={{ label: labels.allIssues, path: issuesPath }}
+          />
+          <div class="card-grid card-grid--3">
+            {issuePages.slice(0, 6).map((issue) => (
+              <IssueCard
+                title={issue.data.navTitle ?? issue.data.title}
+                description={issue.data.description}
+                path={issue.data.urlSlug}
+                label={t.readMore}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--ink">
+        <div class="container">
+          <div class="split">
+            <div class="prose prose--on-ink">
+              <span class="eyebrow eyebrow--on-ink">{t.homeAboutEyebrow}</span>
+              <h2>{t.homeAboutHeading}</h2>
+              <p>{t.homeAboutBody}</p>
+              <p>
+                <a class="link-arrow" href={href(aboutPath)}>
+                  {t.homeAboutLink}
+                  <Icon name="arrow-right" size={15} />
+                </a>
+              </p>
+            </div>
+            <div class="split__aside">
+              <img
+                class="ink-portrait"
+                src={href('/images/about.webp')}
+                alt={lang === 'en' ? 'Abstract illustration of an arch and botanical forms' : 'Abstracte illustratie van een boog en botanische vormen'}
+                width="900"
+                height="1100"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--surface">
+        <div class="container">
+          <SectionHead
+            eyebrow={labels.testimonialsEyebrow}
+            heading={t.testimonialsHeading}
+            intro={t.testimonialsIntro}
+            link={{ label: t.viewAll, path: testimonialsPath }}
+          />
+          <div class="card-grid card-grid--3">
+            {testimonials.slice(0, 3).map((testimonial) => (
+              <TestimonialCard testimonial={testimonial} lang={lang} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <SectionHead
+            eyebrow={labels.faqEyebrow}
+            heading={t.faqHeading}
+            intro={t.faqIntro}
+            link={{ label: t.homeFaqLink, path: faqPath }}
+          />
+          <FaqList items={faqItems.slice(0, 4)} />
+        </div>
+      </section>
+
+      <CtaBand
+        lang={lang}
+        heading={cta?.heading}
+        body={cta?.body}
+        primary={cta?.primaryLabel ? { label: cta.primaryLabel, path: pathFor('book', lang === 'en' ? '/book/' : '/nl/afspraak/') } : undefined}
+        secondary={cta?.secondaryLabel ? { label: cta.secondaryLabel, path: pathFor('contact', lang === 'en' ? '/contact/' : '/nl/contact/') } : undefined}
+      />
+    </>
+  )}
+
+  {layout !== 'home' && (
+    <>
+      {heroImage ? (
+        <Hero
+          lang={lang}
+          eyebrow={data.eyebrow}
+          heading={data.hero.heading}
+          subheading={data.hero.subheading}
+          image={heroImage}
+          imageAlt={data.hero.imageAlt}
+          wide
+        />
+      ) : (
+        <PageHeader eyebrow={data.eyebrow} heading={data.hero.heading} subheading={data.hero.subheading} />
+      )}
+
+      {layout === 'services' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="card-grid card-grid--2">
+              {services.map((service) => (
+                <ServiceCard
+                  service={service}
+                  lang={lang}
+                  linkPath={pageMap.get(service.data.translationKey)?.data.urlSlug}
+                  linkLabel={t.readMore}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'issues' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="card-grid card-grid--3">
+              {issuePages.map((issue) => (
+                <IssueCard
+                  title={issue.data.navTitle ?? issue.data.title}
+                  description={issue.data.description}
+                  path={issue.data.urlSlug}
+                  label={t.readMore}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'prices' && (
+        <section class="section section--tight">
+          <div class="container">
+            <ul class="price-list">
+              {services.map((service) => {
+                const link = pageMap.get(service.data.translationKey)?.data.urlSlug;
+                return (
+                  <li class="price-row">
+                    <div class="price-row__body">
+                      <h3 class="price-row__title">
+                        {link ? <a href={href(link)}>{service.data.title}</a> : service.data.title}
+                      </h3>
+                      <p>{service.data.summary}</p>
+                    </div>
+                    <div class="price-row__meta">
+                      <span>{service.data.duration}</span>
+                      <strong>{service.data.price}</strong>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <p class="price-note">{labels.priceNote}</p>
+          </div>
+        </section>
+      )}
+
+      {layout === 'process' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="steps">
+              {processSteps[lang].map((step) => (
+                <div class="step">
+                  <h2>{step.title}</h2>
+                  <p>{step.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'about' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="split">
+              <div class="prose">
+                <Content />
+              </div>
+              <aside class="split__aside">
+                <div class="aside-card">
+                  <h2>{t.credentialsHeading}</h2>
+                  <ul class="credentials">
+                    {credentials[lang].map((item) => (
+                      <li><Icon name="check" size={17} />{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="aside-card">
+                  <h2>{t.glanceTitle}</h2>
+                  <ul class="glance-list">
+                    <li><Icon name="map-pin" size={16} />{t.glanceAvailability}</li>
+                    <li><Icon name="globe" size={16} />{t.glanceLanguages}</li>
+                    <li><Icon name="shield" size={16} />{t.glanceDiscretion}</li>
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'testimonials' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="card-grid card-grid--3">
+              {testimonials.map((testimonial) => (
+                <TestimonialCard testimonial={testimonial} lang={lang} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'faq' && (
+        <section class="section section--tight">
+          <div class="container">
+            <FaqList items={faqItems} />
+          </div>
+        </section>
+      )}
+
+      {layout === 'contact' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="contact-layout">
+              <div>
+                <h2 class="contact-block-heading">{t.contactDetailsHeading}</h2>
+                <ContactDetails lang={lang} />
+              </div>
+              <ContactForm lang={lang} />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'book' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="contact-layout">
+              <div class="split__aside">
+                <div class="booking-card">
+                  <h2>{t.bookingHeading}</h2>
+                  <p>{t.bookingIntro}</p>
+                  <div class="btn-row">
+                    <a class="btn btn--primary" href={site.bookingUrl} rel="noopener noreferrer" target="_blank">
+                      {labels.openBooking}
+                      <Icon name="arrow-up-right" size={15} class="btn__icon" />
+                    </a>
+                  </div>
+                  <p class="muted" style="font-size:0.82rem">{labels.bookingCalendarNote}</p>
+                </div>
+                <ContactDetails lang={lang} showHours={false} />
+              </div>
+              <ContactForm lang={lang} id="book-form" />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {['standard', 'services', 'issues', 'prices', 'process', 'testimonials', 'faq', 'legal', 'contact'].includes(layout) && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class:list={['prose', { 'prose--legal': layout === 'legal' }]}>
+              <Content />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'about' && (
+        <section class="section section--surface">
+          <div class="container">
+            <SectionHead
+              eyebrow={labels.testimonialsEyebrow}
+              heading={t.testimonialsHeading}
+              intro={t.testimonialsIntro}
+              link={{ label: t.viewAll, path: testimonialsPath }}
+            />
+            <div class="card-grid card-grid--3">
+              {testimonials.slice(0, 3).map((testimonial) => (
+                <TestimonialCard testimonial={testimonial} lang={lang} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === 'book' && (
+        <section class="section section--tight">
+          <div class="container">
+            <div class="prose">
+              <Content />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {data.faq && layout !== 'faq' && (
+        <section class="section section--surface">
+          <div class="container">
+            <SectionHead eyebrow={labels.faqEyebrow} heading={t.faqHeading} intro={t.faqIntro} link={{ label: t.homeFaqLink, path: faqPath }} />
+            <FaqList items={faqItems.slice(0, 4)} />
+          </div>
+        </section>
+      )}
+
+      {data.testimonials && layout !== 'about' && layout !== 'testimonials' && (
+        <section class="section section--surface">
+          <div class="container">
+            <SectionHead eyebrow={labels.testimonialsEyebrow} heading={t.testimonialsHeading} intro={t.testimonialsIntro} link={{ label: t.viewAll, path: testimonialsPath }} />
+            <div class="card-grid card-grid--3">
+              {testimonials.slice(0, 3).map((testimonial) => (
+                <TestimonialCard testimonial={testimonial} lang={lang} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout !== 'contact' && layout !== 'book' && (
+        <CtaBand
+          lang={lang}
+          heading={cta?.heading}
+          body={cta?.body}
+          primary={cta?.primaryLabel ? { label: cta.primaryLabel, path: pathFor('book', lang === 'en' ? '/book/' : '/nl/afspraak/') } : undefined}
+          secondary={cta?.secondaryLabel ? { label: cta.secondaryLabel, path: pathFor('contact', lang === 'en' ? '/contact/' : '/nl/contact/') } : undefined}
+        />
+      )}
+    </>
+  )}
+</BaseLayout>

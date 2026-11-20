@@ -1,0 +1,47 @@
+---
+import { href } from '../lib/content';
+import { ui, type Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  heading?: string;
+  body?: string;
+  primary?: { label: string; path: string };
+  secondary?: { label: string; path: string } | null;
+}
+
+const { lang, heading, body, primary, secondary } = Astro.props;
+const t = ui[lang];
+const bookPath = lang === 'en' ? '/book/' : '/nl/afspraak/';
+const contactPath = lang === 'en' ? '/contact/' : '/nl/contact/';
+
+const primaryPath = primary?.path ?? bookPath;
+const primaryLabel = primary?.label ?? t.bookCta;
+const secondaryPath = secondary === null ? null : secondary?.path ?? contactPath;
+const secondaryLabel = secondary?.label ?? t.ctaSecondary;
+---
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="cta-band">
+      <div class="cta-band__inner">
+        <div>
+          <h2>{heading ?? t.ctaDefaultHeading}</h2>
+          <p>{body ?? t.ctaDefaultBody}</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn--sand" href={href(primaryPath)}>
+            {primaryLabel}
+            <Icon name="arrow-right" size={16} class="btn__icon" />
+          </a>
+          {
+            secondaryPath && (
+              <a class="btn btn--ghost" href={href(secondaryPath)}>{secondaryLabel}</a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

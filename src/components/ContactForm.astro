@@ -1,0 +1,87 @@
+---
+import site from '../data/site.json';
+import { href } from '../lib/content';
+import { ui, type Lang } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+  id?: string;
+}
+
+const { lang, id = 'contact-form' } = Astro.props;
+const t = ui[lang];
+const privacyPath = lang === 'en' ? '/privacy/' : '/nl/privacy/';
+const needsSetup = site.formEndpoint.includes('REPLACE_ME');
+---
+
+<form class="contact-form" id={id} action={site.formEndpoint} method="POST">
+  <h2>{t.formHeading}</h2>
+  <p class="contact-form__intro">{t.formIntro}</p>
+
+  {
+    needsSetup && (
+      <div class="setup-note" role="note">
+        <strong>{t.form.setupTitle}</strong>
+        {t.form.setupNote}
+      </div>
+    )
+  }
+
+  <div class="form-row form-row--2">
+    <div class="field">
+      <label for={`${id}-name`}>{t.form.name} *</label>
+      <input
+        id={`${id}-name`}
+        name="name"
+        type="text"
+        autocomplete="name"
+        required
+        placeholder={lang === 'en' ? 'Your name' : 'Je naam'}
+      />
+    </div>
+    <div class="field">
+      <label for={`${id}-email`}>{t.form.email} *</label>
+      <input
+        id={`${id}-email`}
+        name="email"
+        type="email"
+        autocomplete="email"
+        required
+        placeholder="name@example.com"
+      />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for={`${id}-phone`}>{t.form.phone}</label>
+    <input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+  </div>
+
+  <div class="field">
+    <label for={`${id}-message`}>{t.form.message} *</label>
+    <textarea
+      id={`${id}-message`}
+      name="message"
+      required
+      placeholder={t.form.messagePlaceholder}
+    ></textarea>
+  </div>
+
+  <label class="consent">
+    <input type="checkbox" name="consent" value="yes" required />
+    <span>
+      {t.form.consentBefore}
+      <a href={href(privacyPath)}>{t.form.consentLink}</a>
+      {t.form.consentAfter}
+    </span>
+  </label>
+
+  <input type="hidden" name="_subject" value={`Website enquiry (${lang.toUpperCase()})`} />
+  <div class="honeypot" aria-hidden="true">
+    <label for={`${id}-gotcha`}>Leave this field empty</label>
+    <input id={`${id}-gotcha`} type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <button class="btn btn--primary" type="submit">{t.form.submit}</button>
+  <p class="form-note">{t.form.note} {t.form.requiredHint}</p>
+</form>

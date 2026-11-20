@@ -1,0 +1,37 @@
+---
+import type { TestimonialEntry } from '../lib/content';
+import { tf, ui, type Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  testimonial: TestimonialEntry;
+  lang: Lang;
+}
+
+const { testimonial, lang } = Astro.props;
+const { quote, author, location, service, rating } = testimonial.data;
+const t = ui[lang];
+const initials = author
+  .split(' ')
+  .map((part) => part.charAt(0))
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+const meta = [location, service].filter(Boolean).join(' · ');
+---
+
+<figure class="testimonial-card">
+  <div class="testimonial-card__stars" role="img" aria-label={tf(t.ratingLabel, { rating })}>
+    {[1, 2, 3, 4, 5].map((index) => (
+      <Icon name="star" size={15} style={index > rating ? 'opacity:.28' : undefined} />
+    ))}
+  </div>
+  <blockquote>“{quote}”</blockquote>
+  <figcaption>
+    <span class="testimonial-card__avatar" aria-hidden="true">{initials}</span>
+    <span>
+      <span class="testimonial-card__author">{author}</span>
+      {meta && <span class="testimonial-card__meta" style="display:block">{meta}</span>}
+    </span>
+  </figcaption>
+</figure>

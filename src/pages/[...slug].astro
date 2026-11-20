@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import PageView from '../components/PageView.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', ({ data }) => data.lang === 'en' && data.urlSlug !== '/');
+  return pages.map((page) => ({
+    params: { slug: page.data.urlSlug.replace(/^\/|\/$/g, '') },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+---
+
+<PageView page={page} lang="en" />

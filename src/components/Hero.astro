@@ -1,0 +1,86 @@
+---
+import { href } from '../lib/content';
+import { ui, type Lang } from '../lib/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+  eyebrow?: string;
+  heading: string;
+  subheading: string;
+  image?: string;
+  imageAlt?: string;
+  badges?: string[];
+  secondary?: { label: string; path: string };
+  wide?: boolean;
+  priority?: boolean;
+}
+
+const {
+  lang,
+  eyebrow,
+  heading,
+  subheading,
+  image,
+  imageAlt,
+  badges = [],
+  secondary,
+  wide = false,
+  priority = false,
+} = Astro.props;
+
+const t = ui[lang];
+const bookPath = lang === 'en' ? '/book/' : '/nl/afspraak/';
+---
+
+<section class="hero" aria-labelledby="hero-heading">
+  <span class="hero__glow" aria-hidden="true"></span>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero__content">
+        {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+        <h1 id="hero-heading">{heading}</h1>
+        <p class="hero__sub">{subheading}</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={href(bookPath)}>
+            {t.bookCta}
+            <Icon name="arrow-right" size={16} class="btn__icon" />
+          </a>
+          {secondary && (
+            <a class="btn btn--secondary" href={href(secondary.path)}>{secondary.label}</a>
+          )}
+        </div>
+        {
+          badges.length > 0 && (
+            <ul class="badges" aria-label={lang === 'en' ? 'Practice highlights' : 'Praktijkkenmerken'}>
+              {badges.map((badge) => (
+                <li class="badge">
+                  <Icon name="check" size={13} />
+                  {badge}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      {
+        image && (
+          <div class="hero-figure">
+            <div class:list={['hero-media', { 'hero-media--wide': wide }]}>
+              <img
+                src={href(image)}
+                alt={imageAlt ?? ''}
+                width="1200"
+                height="1500"
+                loading={priority ? 'eager' : 'lazy'}
+                fetchpriority={priority ? 'high' : undefined}
+                decoding="async"
+              />
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

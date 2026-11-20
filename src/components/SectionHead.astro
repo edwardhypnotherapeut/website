@@ -1,0 +1,31 @@
+---
+import { href } from '../lib/content';
+import Icon from './Icon.astro';
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  intro?: string;
+  link?: { label: string; path: string };
+  center?: boolean;
+  headingId?: string;
+}
+
+const { eyebrow, heading, intro, link, center = false, headingId } = Astro.props;
+---
+
+<div class:list={['section__head', { 'section--center': center }]}>
+  <div class="section__head-text">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h2 id={headingId}>{heading}</h2>
+    {intro && <p>{intro}</p>}
+  </div>
+  {
+    link && (
+      <a class="link-arrow" href={href(link.path)}>
+        {link.label}
+        <Icon name="arrow-right" size={15} />
+      </a>
+    )
+  }
+</div>

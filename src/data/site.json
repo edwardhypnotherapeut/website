@@ -1,0 +1,53 @@
+{
+  "practiceName": "Edward Hazebroek Hypnotherapy",
+  "therapist": "Edward Hazebroek",
+  "email": "info@edwardhazebroek.nl",
+  "phone": "+31 6 34 04 04 03",
+  "phoneHref": "+31634040403",
+  "whatsapp": "+31634040403",
+  "address": {
+    "street": "Stoomloggerweg 8",
+    "postalCode": "3133 KT",
+    "city": "Vlaardingen",
+    "region": "Zuid-Holland",
+    "country": "Netherlands",
+    "countryCode": "NL",
+    "mapsUrl": "https://maps.google.com/?q=Stoomloggerweg+8,+3133+KT+Vlaardingen"
+  },
+  "areaServed": ["Rotterdam", "Vlaardingen", "Schiedam", "Delft", "Online"],
+  "openingHours": {
+    "en": [
+      { "days": "Monday – Friday", "hours": "09:00 – 19:00" },
+      { "days": "Saturday", "hours": "By appointment" },
+      { "days": "Sunday", "hours": "Closed" }
+    ],
+    "nl": [
+      { "days": "Maandag – vrijdag", "hours": "09:00 – 19:00" },
+      { "days": "Zaterdag", "hours": "Op afspraak" },
+      { "days": "Zondag", "hours": "Gesloten" }
+    ]
+  },
+  "openingHoursSpecification": [
+    {
+      "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    }
+  ],
+  "bookingUrl": "https://cal.com/edwardhazebroek/intake",
+  "formEndpoint": "https://formspree.io/f/REPLACE_ME",
+  "blurb": {
+    "en": "Hypnotherapy, regression therapy and constellation work in Vlaardingen, serving Rotterdam and online clients across the Netherlands. Calm, careful, evidence-informed.",
+    "nl": "Hypnotherapie, regressietherapie en opstellingenwerk in Vlaardingen, voor Rotterdam en online cliënten in heel Nederland. Rustig, zorgvuldig en onderbouwd."
+  },
+  "social": [
+    { "label": "Instagram", "url": "https://www.instagram.com/edwardhazebroek", "icon": "instagram" },
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/edwardhazebroek", "icon": "linkedin" },
+    { "label": "Facebook", "url": "https://www.facebook.com/edwardhazebroek", "icon": "facebook" }
+  ],
+  "legal": {
+    "kvk": "REPLACE_ME_KVK",
+    "agb": "REPLACE_ME_AGB",
+    "complaintsBody": "REPLACE_ME_COMPLAINTS_BODY"
+  }
+}

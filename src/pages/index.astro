@@ -1,0 +1,12 @@
+---
+import { getPageByKey } from '../lib/content';
+import PageView from '../components/PageView.astro';
+
+const page = await getPageByKey('en', 'home');
+
+if (!page) {
+  throw new Error('Missing English home page content entry (src/content/pages/en/home.md).');
+}
+---
+
+<PageView page={page} lang="en" />
