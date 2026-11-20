@@ -26,10 +26,10 @@ jobs:
         with:
           node-version: 22
         env:
-          # Set these as repository variables (Settings → Secrets and variables → Actions → Variables).
-          # Project pages: SITE_URL=https://<user>.github.io  BASE_PATH=/<repo>
-          SITE_URL: ${{ vars.SITE_URL || 'https://edwardhazebroek.nl' }}
-          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+          # Defaults publish at https://edwardhypnotherapeut.github.io/website/.
+          # Override with repository variables to use a custom domain at the root.
+          SITE_URL: ${{ vars.SITE_URL || 'https://edwardhypnotherapeut.github.io' }}
+          BASE_PATH: ${{ vars.BASE_PATH || '/website' }}
 
   deploy:
     needs: build

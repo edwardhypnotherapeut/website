@@ -26,23 +26,23 @@ npm run preview     # preview the built site
 
 Two environment variables control deployment URLs:
 
-| Variable    | Default                       | Purpose                                                                 |
-| ----------- | ----------------------------- | ----------------------------------------------------------------------- |
-| `SITE_URL`  | `https://edwardhazebroek.nl`  | Public origin used for canonical URLs, Open Graph and the sitemap        |
-| `BASE_PATH` | `/`                           | Path prefix when the site is served from a subdirectory                 |
+| Variable    | Default                                    | Purpose                                                          |
+| ----------- | ------------------------------------------ | ---------------------------------------------------------------- |
+| `SITE_URL`  | `https://edwardhypnotherapeut.github.io`   | Public origin used for canonical URLs, Open Graph and the sitemap |
+| `BASE_PATH` | `/website`                                 | Path prefix when the site is served from a subdirectory          |
 
-For a GitHub Pages project site at `https://username.github.io/astro-test/`, set:
+These defaults publish at `https://edwardhypnotherapeut.github.io/website/`. To use a custom domain at the root instead, set:
 
 ```bash
-SITE_URL=https://username.github.io
-BASE_PATH=/astro-test
+SITE_URL=https://your-domain.com
+BASE_PATH=/
 ```
 
 Copy `.env.example` to `.env` for local production builds. Internal links, assets, canonical URLs, alternates, the sitemap and `robots.txt` are all base-path aware.
 
 ## Deploying
 
-The included `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on pushes to `main`. Set `SITE_URL` and `BASE_PATH` as repository **Variables** (Settings → Secrets and variables → Actions → Variables). For a custom domain, set `SITE_URL=https://your-domain.com` and `BASE_PATH=/`.
+The included `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on pushes to `main`. Its defaults target `https://edwardhypnotherapeut.github.io/website/`; in GitHub's **Settings → Pages**, choose **GitHub Actions** as the source. If you later switch to a custom domain, set `SITE_URL` and `BASE_PATH` as repository **Variables** (Settings → Secrets and variables → Actions → Variables) to override the defaults.
 
 ## Editing content
 
